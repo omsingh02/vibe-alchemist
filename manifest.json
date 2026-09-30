@@ -1,0 +1,78 @@
+{
+  "name": "Vibe Alchemist ✨",
+  "short_name": "VibeAlchemist",
+  "description": "An absurdly delightful mood repair kit & overthinking shredder for Android",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#FFF8F5",
+  "theme_color": "#FF8A96",
+  "icons": [
+    {
+      "src": "icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icons/icon-maskable.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Shred A Bad Vibe",
+      "short_name": "Shredder",
+      "description": "Destroy an annoying thought immediately",
+      "url": "./index.html#shredder",
+      "icons": [
+        {
+          "src": "icons/icon-192.png",
+          "sizes": "192x192",
+          "type": "image/png"
+        }
+      ]
+    },
+    {
+      "name": "Cat Purr Therapy",
+      "short_name": "Purr",
+      "description": "Soothing rhythmic haptic purrs",
+      "url": "./index.html#pet",
+      "icons": [
+        {
+          "src": "icons/icon-192.png",
+          "sizes": "192x192",
+          "type": "image/png"
+        }
+      ]
+    },
+    {
+      "name": "Emergency Dopamine",
+      "short_name": "Emergency",
+      "description": "Instant celebration and reassurance",
+      "url": "./index.html#switchboard",
+      "icons": [
+        {
+          "src": "icons/icon-192.png",
+          "sizes": "192x192",
+          "type": "image/png"
+        }
+      ]
+    }
+  ],
+  "id": "./index.html",
+  "lang": "en",
+  "categories": [
+    "lifestyle",
+    "health"
+  ]
+}

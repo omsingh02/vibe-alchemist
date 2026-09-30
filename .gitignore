@@ -1,0 +1,8 @@
+.vercel/
+node_modules/
+__pycache__/
+*.pyc
+*.bak
+qr_code.png
+.DS_Store
+.env*

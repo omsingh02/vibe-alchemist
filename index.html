@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#FF8A96">
+  <meta name="author" content="Om Singh">
+  <meta name="description" content="An absurdly delightful mood repair kit, overthinking shredder, and sensory keepsake for Android & Web">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
+  <link rel="apple-touch-icon" href="icons/icon-192.png">
+  
+  <title>Vibe Alchemist ✨</title>
+  
+  <!-- Modern Google Fonts: Plus Jakarta Sans, Outfit, Fraunces -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,500&family=Outfit:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="style.css">
+</head>
+<body data-theme="peach">
+  <!-- Ambient Atmospheric Weather Canvas Layer (Rain, Starlight, Bubbles) -->
+  <canvas id="ambientCanvas" class="ambient-canvas-layer" aria-hidden="true"></canvas>
+
+  <!-- Status & Dynamic Pill Header -->
+  <header class="top-bar">
+    <div class="brand">
+      <span class="brand-icon">✨</span>
+      <div class="brand-text">
+        <h1 class="brand-title">Vibe Alchemist</h1>
+        <span class="brand-subtitle">Emergency Mood Repair & Sensory Keepsake</span>
+      </div>
+    </div>
+    
+    <div class="header-actions">
+      <!-- Ambient Weather Atmosphere Toggle (Rain / Sparks / Off) -->
+      <button class="icon-btn weather-toggle-btn" id="weatherBtn" aria-label="Cycle Weather Ambiance" title="Toggle Rain & Sparks Ambiance">
+        <span id="weatherIcon">🌧️</span>
+      </button>
+
+      <!-- Theme Switcher Pill -->
+      <button class="icon-btn theme-toggle-btn" id="themeBtn" aria-label="Change color theme" title="Switch Theme">
+        <span class="theme-dot"></span>
+        <span class="theme-icon">🎨</span>
+      </button>
+      
+      <!-- Audio Toggle Button -->
+      <button class="icon-btn audio-toggle-btn active" id="audioBtn" aria-label="Toggle Sound" title="Sound Effects">
+        <span id="audioIcon">🔊</span>
+      </button>
+
+      <!-- Install PWA Button (Visible if installable) -->
+      <button class="pill-btn install-btn" id="installBtn" style="display: none;">
+        <span>📲 Install</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Theme Selection Sheet / Popover -->
+  <div class="theme-modal" id="themeModal">
+    <div class="theme-modal-card">
+      <div class="theme-modal-header">
+        <h3>Curated Palettes</h3>
+        <button class="close-btn" id="closeThemeBtn">&times;</button>
+      </div>
+      <p class="theme-hint">Pick a mood aesthetic from Material You to Velvet Wine:</p>
+      <div class="theme-grid">
+        <button class="theme-option active" data-theme-val="peach">
+          <span class="swatch" style="background: linear-gradient(135deg, #FF9A8B, #FF6A88);"></span>
+          <span>Peach Sorbet</span>
+        </button>
+        <button class="theme-option" data-theme-val="wine">
+          <span class="swatch" style="background: linear-gradient(135deg, #4A1528, #F5B8CB);"></span>
+          <span>Mellow Velvet 🍷</span>
+        </button>
+        <button class="theme-option" data-theme-val="rain">
+          <span class="swatch" style="background: linear-gradient(135deg, #0f172a, #60A5FA);"></span>
+          <span>Rainy Sukoon 🌧️</span>
+        </button>
+        <button class="theme-option" data-theme-val="lavender">
+          <span class="swatch" style="background: linear-gradient(135deg, #C471ED, #8A64EB);"></span>
+          <span>Lavender Fog</span>
+        </button>
+        <button class="theme-option" data-theme-val="matcha">
+          <span class="swatch" style="background: linear-gradient(135deg, #84cc16, #10b981);"></span>
+          <span>Matcha Mochi</span>
+        </button>
+        <button class="theme-option" data-theme-val="strawberry">
+          <span class="swatch" style="background: linear-gradient(135deg, #f472b6, #fb7185);"></span>
+          <span>Berry Milk</span>
+        </button>
+        <button class="theme-option" data-theme-val="midnight">
+          <span class="swatch" style="background: linear-gradient(135deg, #1e1b4b, #4338ca);"></span>
+          <span>Starlight Dark</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Viewports Container -->
+  <main class="app-viewport">
+    
+    <!-- SECTION 1: THE JELLY PET / SQUISHY MOOD SPONGE -->
+    <section class="tab-panel active" id="tab-pet">
+      <div class="pet-hero-card">
+        <div class="pet-meta">
+          <span class="status-badge pulse-dot">● SQUISHY & LIVE</span>
+          <span class="pet-name-tag">Bobo the Mood Sponge</span>
+        </div>
+        
+        <!-- Speech Bubble -->
+        <div class="speech-bubble" id="petSpeech">
+          <p id="petSpeechText">Tap, stretch or feed me comfort food. I absorb stress and convert it into pure silly energy. ₍^.ˬ.^₎</p>
+        </div>
+
+        <!-- Canvas for Spring Jelly Physics Blob -->
+        <div class="canvas-wrapper">
+          <canvas id="petCanvas" width="340" height="280" role="img" aria-label="Bobo the jelly pet. Drag to stretch."></canvas>
+        </div>
+
+        <!-- Interactive Pet Controls -->
+        <div class="pet-actions">
+          <button class="fun-btn pet-poke-btn" id="pokeBtn">
+            <span>👈 Poke</span>
+          </button>
+          <button class="fun-btn pet-purr-btn" id="purrBtn">
+            <span id="purrIcon">🐱</span> <span id="purrLabel">Purr Engine</span>
+          </button>
+          <button class="fun-btn pet-feed-btn" id="feedBtn">
+            <span>🍽️ Feed Treat <small id="currentTreatEmoji">🥐</small></span>
+          </button>
+        </div>
+
+        <!-- Comfort Snack Vault (Inspired by Royal Indulgence No-Sharing Plate) -->
+        <div class="snack-vault" id="snackVault" style="display: none;">
+          <div class="vault-title">
+            <span>🥐 The Comfort Pantry (Feed Bobo)</span>
+            <button class="close-mini-btn" id="closeVaultBtn">&times;</button>
+          </div>
+          <div class="snack-grid">
+            <button class="snack-item active" data-snack="croissant">
+              <span class="snack-icon">🥐</span>
+              <span class="snack-name">Warm Croissant</span>
+              <span class="snack-tag">Flaky butter joy</span>
+            </button>
+            <button class="snack-item" data-snack="burger">
+              <span class="snack-icon">🍔</span>
+              <span class="snack-name">Cheese Burst</span>
+              <span class="snack-tag">Extra cheese · No tandoori</span>
+            </button>
+            <button class="snack-item" data-snack="brownie">
+              <span class="snack-icon">🍫</span>
+              <span class="snack-name">Melting Brownie</span>
+              <span class="snack-tag">Ice cream first</span>
+            </button>
+            <button class="snack-item" data-snack="momos">
+              <span class="snack-icon">🥟</span>
+              <span class="snack-name">Chicken Momos</span>
+              <span class="snack-tag">Steaming comfort</span>
+            </button>
+            <button class="snack-item" data-snack="boba">
+              <span class="snack-icon">🧋</span>
+              <span class="snack-name">Iced Boba Chai</span>
+              <span class="snack-tag">Sweet serotonin</span>
+            </button>
+            <button class="snack-item" data-snack="paratha">
+              <span class="snack-icon">🥞</span>
+              <span class="snack-name">Aloo Paratha</span>
+              <span class="snack-tag">With fresh dahi</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="pet-tip">
+          <small>💡 Drag to stretch • Gently pet to purr • Choose comfort snacks above</small>
+        </div>
+      </div>
+
+    <!-- WEATHER CHECK-IN & MOOD BAROMETER (From Vibe Alchemist + Royal Indulgence) -->
+    <div class="mood-barometer card" id="moodBarometer">
+      <div class="barometer-top">
+        <div class="barometer-label-group">
+          <span class="mini-label">CURRENT WEATHER CHECK-IN</span>
+          <span class="weather-current-badge" id="currentMoodBadge">Cozy 🌤️</span>
+        </div>
+        <span class="barometer-sub">Zero judgement · Pick your weather</span>
+      </div>
+
+      <div class="mood-pill-row" id="moodRow" role="group" aria-label="Current Mood Weather">
+        <button class="mood-pill" data-mood="stormy" aria-label="Stormy">
+          <span class="mood-emoji">🌩️</span>
+          <span class="mood-name">Stormy</span>
+        </button>
+        <button class="mood-pill" data-mood="foggy" aria-label="Foggy">
+          <span class="mood-emoji">🌫️</span>
+          <span class="mood-name">Foggy</span>
+        </button>
+        <button class="mood-pill" data-mood="buzzy" aria-label="Buzzy">
+          <span class="mood-emoji">⚡</span>
+          <span class="mood-name">Buzzy</span>
+        </button>
+        <button class="mood-pill active" data-mood="cozy" aria-label="Cozy">
+          <span class="mood-emoji">🌤️</span>
+          <span class="mood-name">Cozy</span>
+        </button>
+        <button class="mood-pill" data-mood="tired" aria-label="Tired">
+          <span class="mood-emoji">🌙</span>
+          <span class="mood-name">Tired</span>
+        </button>
+      </div>
+
+      <div class="mood-coping-card" id="moodCopingCard">
+        <p id="moodAdvice" class="mood-advice">A quiet corner just for you. Soft light, steady pulse, nowhere else to be.</p>
+        <button class="mood-action-shortcut" id="moodShortcutBtn">
+          <span>👉 Try 60s Breathing</span>
+        </button>
+      </div>
+    </div>
+    </section>
+
+    <!-- SECTION 2: THE OVERTHINKING SHREDDER -->
+    <section class="tab-panel" id="tab-shredder">
+      <div class="section-card shredder-card">
+        <div class="card-header">
+          <div class="header-icon">🌪️</div>
+          <div>
+            <h2>The Overthinking Shredder</h2>
+            <p>Feed any silly thought, social dread, or noisy static. It dissolves into rainwater.</p>
+          </div>
+        </div>
+
+        <!-- Quick chips for fast venting -->
+        <div class="chips-container" id="quickThoughts">
+          <button class="thought-chip" data-text="Did I text something super awkward earlier?">awkward text panic</button>
+          <button class="thought-chip" data-text="My social battery is currently at -40%">social battery dead</button>
+          <button class="thought-chip" data-text="People were slightly too noisy and irritating today">people were annoying</button>
+          <button class="thought-chip" data-text="I feel completely unproductive and guilty about it">guilt spiral</button>
+          <button class="thought-chip" data-text="I am craving carbs, peace, and justice in equal measure">craving carbs & peace</button>
+          <button class="thought-chip" data-text="Overthinking things that haven't even happened yet">imaginary emergencies</button>
+        </div>
+
+        <!-- Paper Input Slot -->
+        <div class="paper-slot-container" id="paperSlot">
+          <div class="paper-sheet" id="paperSheet">
+            <div class="paper-lines"></div>
+            <textarea id="thoughtInput" placeholder="The thought that won't leave... (e.g. 'I said bye when they said hello', 'exhausted', 'overthinking everything')" rows="3" maxlength="280"></textarea>
+            <div class="paper-footer-bar">
+              <span class="paper-pin">📌 Confirmed Brain Goblin</span>
+              <span class="char-counter" id="charCount">0 / 280</span>
+            </div>
+          </div>
+          
+          <!-- Animated Shredder Teeth -->
+          <div class="shredder-mouth">
+            <div class="grate-bars"></div>
+            <div class="mouth-label">⚠️ DANGER: HIGH-TORQUE BRAIN-CLEANSER</div>
+          </div>
+        </div>
+
+        <!-- Big Red Shred Button -->
+        <button class="shred-btn" id="shredActionBtn">
+          <span class="shred-icon">⚡</span>
+          <span>SHRED IT INTO DUST</span>
+          <span class="shred-icon">⚡</span>
+        </button>
+
+        <!-- Shred Result / Cosmic Verdict Modal/Card -->
+        <div class="verdict-card" id="verdictBox" style="display: none;">
+          <div class="verdict-banner">
+            <span>🎉 OBLITERATION COMPLETE</span>
+          </div>
+          <div class="verdict-body">
+            <h4 id="verdictTitle">Official Cosmic Disposition</h4>
+            <div class="verdict-stat" id="verdictStats">
+              Analysis: 97.4% baseless brain static • 2.6% mild thirst
+            </div>
+            <p class="verdict-text" id="verdictContent">
+              Your thought has been shredded into quantum glitter and dissolved. It is now legally just rainwater.
+            </p>
+            <div class="verdict-rx">
+              <strong>Mandatory Prescription:</strong>
+              <span id="verdictRx">Wrap self in blanket burrito, hydrate with iced tea, refuse to explain self to anyone today.</span>
+            </div>
+          </div>
+          <div class="verdict-footer">
+            <button class="secondary-btn" id="shareVerdictBtn">
+              <span>📤 Share Verdict</span>
+            </button>
+            <button class="primary-btn" id="shredAgainBtn">
+              <span>Shred Another</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 3: ABSURD ORACLE & COMPLIMENTS -->
+    <section class="tab-panel" id="tab-oracle">
+      <div class="section-card oracle-card">
+        <div class="card-header">
+          <div class="header-icon">🔮</div>
+          <div>
+            <h2>Absurd Oracle & Prophecy Engine</h2>
+            <p>Oddly specific encouragement, rain prophecies, and unverified truths.</p>
+          </div>
+        </div>
+
+        <!-- Oracle Category Filter -->
+        <div class="oracle-categories" id="oracleCategories">
+          <button class="oracle-cat-btn active" data-cat="all">🔮 All Sparks</button>
+          <button class="oracle-cat-btn" data-cat="rain">🌧️ Rain & Sukoon</button>
+          <button class="oracle-cat-btn" data-cat="royal">👑 Royal Truths</button>
+          <button class="oracle-cat-btn" data-cat="bakery">🥐 Bakery Wisdom</button>
+        </div>
+
+        <!-- Crystal Sphere Interactive -->
+        <div class="crystal-orb-wrapper">
+          <div class="crystal-orb" id="orbBtn" role="button" tabindex="0" aria-label="Reveal a prophecy">
+            <div class="orb-inner-glow"></div>
+            <div class="orb-stars">✨ 🔮 ✨</div>
+            <span class="orb-tap-hint">TAP THE ORB</span>
+          </div>
+        </div>
+
+        <!-- Fortune Card -->
+        <div class="fortune-display-card" id="fortuneCard">
+          <div class="fortune-badge" id="fortuneCategory">✨ COSMIC REVELATION</div>
+          <p class="fortune-quote" id="fortuneText">
+            "Some thoughts are weather — real for a moment, never permanent."
+          </p>
+          <div class="fortune-actions">
+            <button class="pill-action-btn" id="anotherFortuneBtn">
+              <span>🎲 Another Little Truth</span>
+            </button>
+            <button class="pill-action-btn" id="shareFortuneBtn">
+              <span>💌 Send Spark</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Custom Compliment Alchemist (Add personal touch) -->
+        <div class="compliment-customizer">
+          <h4>Custom Compliment Alchemy</h4>
+          <p class="customizer-sub">Inject a name or nickname for personalized praise:</p>
+          <div class="custom-input-row">
+            <input type="text" id="friendNameInput" placeholder="Nickname (e.g. Bestie, Queen, Mochi)" maxlength="20">
+            <button class="pill-btn" id="genCustomBtn">Cast Spell</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 4: UNCONDITIONAL VALIDATION COURT -->
+    <section class="tab-panel" id="tab-validation">
+      <div class="section-card validation-card">
+        <div class="card-header">
+          <div class="header-icon">⚖️</div>
+          <div>
+            <h2>Supreme Court of Validation</h2>
+            <p>Had an argument or someone annoyed you? Get instant total exoneration.</p>
+          </div>
+        </div>
+
+        <div class="gavel-box">
+          <div class="court-buzzer-container">
+            <button class="court-buzzer" id="courtBuzzerBtn" aria-label="Tell me I'm right button">
+              <span class="buzzer-glow"></span>
+              <span class="buzzer-text">TELL ME<br>I'M RIGHT!</span>
+            </button>
+          </div>
+          <p class="court-hint">⚠️ Press firmly for immediate legal vindication</p>
+        </div>
+
+        <div class="ruling-card" id="rulingCard">
+          <div class="ruling-stamp">UNANIMOUS RULING</div>
+          <h3 id="rulingHeading">CASE 404: YOU WERE 1000% IN THE RIGHT</h3>
+          <p id="rulingText">
+            The Supreme Council of Sensible People has examined the evidence. The other party was committing severe nonsense. Furthermore, their posture was questionable and you deserve an iced drink immediately.
+          </p>
+          <div class="ruling-signoff">
+            <span>Presiding Judge: <em>Chief Justice Golden Retriever</em></span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 5: EMERGENCY DOPAMINE SWITCHBOARD -->
+    <section class="tab-panel" id="tab-switchboard">
+      <div class="section-card switchboard-card">
+        <div class="card-header">
+          <div class="header-icon">🕹️</div>
+          <div>
+            <h2>Emergency Sensory Switchboard</h2>
+            <p>Tactile micro-rituals, rain pearls, mindful hydration, and comfort keepsakes.</p>
+          </div>
+        </div>
+
+        <!-- Toy 1: Tactile Rain Pearls / Bubble Wrap -->
+        <div class="toy-card bubble-wrap-section">
+          <div class="toy-header">
+            <h4>🫧 Tactile Rain Pearls</h4>
+            <div class="pearl-meta-actions">
+              <span class="pearl-counter" id="pearlCounter">24 pearls left</span>
+              <button class="toy-reset-btn" id="resetBubblesBtn">↻ Fresh Sheet</button>
+            </div>
+          </div>
+          <p class="toy-desc">Pop the rain pearls. Tiny instant satisfaction.</p>
+          <div class="bubble-grid" id="bubbleGrid">
+            <!-- Dynamically populated 24 pearls -->
+          </div>
+          <div class="clean-sweep-banner" id="cleanSweepBanner" style="display: none;">
+            <span>🎉 Clean sweep! Pristine sukoon achieved.</span>
+          </div>
+        </div>
+
+        <!-- Toy 2: The Bakery & Rain Breath Ritual -->
+        <div class="toy-card breath-section">
+          <div class="toy-header">
+            <h4>🥐 The Bakery & Rain Breath Ritual</h4>
+            <button class="toy-reset-btn" id="toggleBreathBtn">▶ Start 60s</button>
+          </div>
+          <p class="toy-desc">Synchronize with the expanding circle. 4s inhale, 2s hold, 6s exhale.</p>
+          <div class="breath-visual-container">
+            <div class="breath-circle" id="breathCircle">
+              <span class="breath-label" id="breathLabel">Breathe In...</span>
+              <span class="breath-sub" id="breathSub">Smell the warm bakery air</span>
+              <span class="breath-timer" id="breathTimer">60s</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Toy 3: Mindful Water Break & Rest (From Royal Indulgence) -->
+        <div class="toy-card water-break-section">
+          <div class="toy-header">
+            <h4>💧 A Little Water Break</h4>
+            <span class="water-sip-badge" id="waterSipBadge">0 sips today</span>
+          </div>
+          <p class="toy-desc">Unclench your jaw. Drop your shoulders. A slow evening still counts.</p>
+          <div class="water-break-content">
+            <p class="water-quote">“A little water break. Then maybe a new thing to learn before the one-hour sleep negotiations begin.”</p>
+            <div class="water-actions">
+              <button class="fun-btn water-sip-btn" id="sipWaterBtn">
+                <span>💧 Take a Mindful Sip</span>
+              </button>
+              <button class="fun-btn jaw-unclench-btn" id="unclenchBtn">
+                <span>🧘 Unclench & Relax</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Toy 4: The No-Sharing Plate (Comfort Keepsake from Royal Indulgence) -->
+        <div class="toy-card comfort-plate-section">
+          <div class="toy-header">
+            <h4>🍽️ The No-Sharing Plate</h4>
+            <span class="comfort-badge">Curated Comfort</span>
+          </div>
+          <p class="toy-desc">Zero explanations required. More cheese. Pure sensory comfort.</p>
+          <div class="comfort-items-list">
+            <div class="comfort-row">
+              <span class="comfort-emoji">🍔</span>
+              <div class="comfort-info">
+                <strong>Cheese Burst Chicken Burger</strong>
+                <small>Normal, never tandoori · Extra melted cheese</small>
+              </div>
+              <button class="comfort-fav-btn" aria-label="Favorite burger">❤️</button>
+            </div>
+            <div class="comfort-row">
+              <span class="comfort-emoji">🍫</span>
+              <div class="comfort-info">
+                <strong>Melting Brownie with Ice Cream</strong>
+                <small>Eat the cold ice cream before the last warm bite</small>
+              </div>
+              <button class="comfort-fav-btn" aria-label="Favorite brownie">❤️</button>
+            </div>
+            <div class="comfort-row">
+              <span class="comfort-emoji">🥟</span>
+              <div class="comfort-info">
+                <strong>Steaming Chicken Momos</strong>
+                <small>Hot with fiery garlic chutney on the side</small>
+              </div>
+              <button class="comfort-fav-btn" aria-label="Favorite momos">❤️</button>
+            </div>
+            <div class="comfort-row">
+              <span class="comfort-emoji">🥞</span>
+              <div class="comfort-info">
+                <strong>Aloo Paratha & Fresh Dahi</strong>
+                <small>Golden, warm, and comforting supreme</small>
+              </div>
+              <button class="comfort-fav-btn" aria-label="Favorite paratha">❤️</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Toy 5: Panic Confetti Cannon -->
+        <div class="toy-card confetti-section">
+          <div class="toy-header">
+            <h4>🎉 Panic Celebration Cannon</h4>
+          </div>
+          <p class="toy-desc">When life requires unearned fireworks & fanfare</p>
+          <button class="cannon-btn" id="cannonBtn">
+            <span>🎆 LAUNCH FIREWORKS BLAST</span>
+          </button>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Fullscreen Confetti Canvas Layer -->
+  <canvas id="confettiCanvas" class="confetti-overlay"></canvas>
+
+  <!-- Floating Toast Notification -->
+  <div class="toast-bubble" id="toastBubble" role="status" aria-live="polite"></div>
+
+  <!-- Bottom Navigation Bar (Android 12+ Pill Navigation) -->
+  <nav class="bottom-nav">
+    <div class="nav-pill-indicator" id="navIndicator"></div>
+    <button class="nav-item active" data-tab="tab-pet" id="nav-pet" aria-label="Jelly Pet">
+      <span class="nav-icon">🐾</span>
+      <span class="nav-label">Bobo</span>
+    </button>
+    <button class="nav-item" data-tab="tab-shredder" id="nav-shredder" aria-label="Shredder">
+      <span class="nav-icon">🌪️</span>
+      <span class="nav-label">Shredder</span>
+    </button>
+    <button class="nav-item" data-tab="tab-oracle" id="nav-oracle" aria-label="Oracle">
+      <span class="nav-icon">🔮</span>
+      <span class="nav-label">Oracle</span>
+    </button>
+    <button class="nav-item" data-tab="tab-validation" id="nav-validation" aria-label="Courtroom">
+      <span class="nav-icon">⚖️</span>
+      <span class="nav-label">Exonerate</span>
+    </button>
+    <button class="nav-item" data-tab="tab-switchboard" id="nav-switchboard" aria-label="Switchboard">
+      <span class="nav-icon">🕹️</span>
+      <span class="nav-label">Sensory</span>
+    </button>
+  </nav>
+
+  <script src="app.js"></script>
+</body>
+</html>
