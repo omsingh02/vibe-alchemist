@@ -1,5 +1,5 @@
 /**
- * VIBE ALCHEMIST ✨ - Android 12+ Mood Panacea & Sensory Keepsake
+ * VIBE ALCHEMIST - Android 12+ Mood Panacea & Sensory Keepsake
  * Procedural Web Audio, Haptics, Spring Physics Jelly Blob,
  * Ambient Weather Particle System, Overthinking Shredder,
  * Validation Courtroom, Mindful Hydration, and Tactile Rain Pearls.
@@ -383,6 +383,10 @@ async function copyText(text) {
 
 // --- 3. TOAST NOTIFICATION UTILITY ---
 let toastTimeout = null;
+function setIcon(el, id) {
+  if (el) el.innerHTML = `<svg class="i" aria-hidden="true"><use href="#i-${id}"/></svg>`;
+}
+
 function showToast(message) {
   const toast = document.getElementById('toastBubble');
   if (!toast) return;
@@ -427,10 +431,8 @@ class AmbientWeather {
     this.initParticles();
     const icon = document.getElementById('weatherIcon');
     if (icon) {
-      if (mode === 'rain') icon.textContent = '🌧️';
-      else if (mode === 'sparks') icon.textContent = '✨';
-      else if (mode === 'bubbles') icon.textContent = '🫧';
-      else icon.textContent = '🚫';
+      setIcon(icon, { rain: 'cloud-rain', sparks: 'sparkle', bubbles: 'bubbles' }[mode] || 'ban');
+      if (icon.parentElement) icon.parentElement.setAttribute('aria-label', 'Ambience: ' + mode);
     }
   }
 
@@ -439,12 +441,11 @@ class AmbientWeather {
     const nextIdx = (modes.indexOf(this.mode) + 1) % modes.length;
     this.setMode(modes[nextIdx]);
     const labels = {
-      rain: '🌧️ Monsoon Sukoon Active',
-      sparks: '✨ Starlight Embers Active',
-      bubbles: '🫧 Floating Pearls Active',
-      off: '🚫 Ambiance Paused'
+      rain: 'Monsoon Sukoon Active',
+      sparks: 'Starlight Embers Active',
+      bubbles: 'Floating Pearls Active',
+      off: 'Ambiance Paused'
     };
-    showToast(labels[this.mode]);
     sounds.playDrop();
     haptics.tap();
   }
@@ -560,39 +561,39 @@ let ambientWeather = null;
 // --- 5. MOOD BAROMETER / WEATHER CHECK-IN SYSTEM ---
 const MOOD_DATA = {
   stormy: {
-    badge: 'Stormy 🌩️',
+    badge: 'Stormy',
     advice: 'Messy thoughts welcome. Try the 60-second sensory reset or drop the noise into the shredder.',
-    shortcut: '👉 Shred the loop',
+    shortcut: 'Open shredder',
     tab: 'tab-shredder',
     weather: 'rain'
   },
   foggy: {
-    badge: 'Foggy 🌫️',
+    badge: 'Foggy',
     advice: 'Low bandwidth detected. Pick one tiny action, then let that be enough for now.',
-    shortcut: '👉 Try 60s Breathing',
+    shortcut: 'Start 60s breathing',
     tab: 'tab-switchboard',
     action: 'breath',
     weather: 'bubbles'
   },
   buzzy: {
-    badge: 'Buzzy ⚡',
+    badge: 'Buzzy',
     advice: 'Your energy needs a container. Shred the loudest thought loop first.',
-    shortcut: '👉 Feed the Shredder',
+    shortcut: 'Open shredder',
     tab: 'tab-shredder',
     weather: 'sparks'
   },
   cozy: {
-    badge: 'Cozy 🌤️',
+    badge: 'Cozy',
     advice: 'A quiet corner just for you. Soft light, steady pulse, nowhere else to be.',
-    shortcut: '👉 Treat Bobo a Snack',
+    shortcut: 'Feed Bobo',
     tab: 'tab-pet',
     action: 'feed',
     weather: 'sparks'
   },
   tired: {
-    badge: 'Tired 🌙',
+    badge: 'Tired',
     advice: 'Sleepy rain, nothing to prove. A slow evening still counts.',
-    shortcut: '👉 Rain Oracle Truth',
+    shortcut: 'Open oracle',
     tab: 'tab-oracle',
     weather: 'rain'
   }
@@ -651,34 +652,34 @@ function initMoodBarometer() {
 // --- 6. SPRING PHYSICS JELLY PET (BOBO) WITH COMFORT PANTRY ---
 const BOBO_SNACKS = {
   croissant: {
-    icon: '🥐',
+    icon: '',
     sound: 'chew',
-    quote: 'CRUNCH! Delicious butter calories detected. All systems at 100% contentment. 🥐✨'
+    quote: 'CRUNCH! Delicious butter calories detected. All systems at 100% contentment.'
   },
   burger: {
-    icon: '🍔',
+    icon: '',
     sound: 'chew',
-    quote: 'CHEESE PULL UNLOCKED! Normal, never tandoori. Happiness levels spike by 400%! 🍔🧀'
+    quote: 'CHEESE PULL UNLOCKED! Normal, never tandoori. Happiness levels spike by 400%!'
   },
   brownie: {
-    icon: '🍫',
+    icon: '',
     sound: 'chew',
-    quote: 'WARM BROWNIE + COLD ICE CREAM! Scientific optimal strategy: ice cream before the last bite! 🍫🍦'
+    quote: 'WARM BROWNIE + COLD ICE CREAM! Scientific optimal strategy: ice cream before the last bite!'
   },
   momos: {
-    icon: '🥟',
+    icon: '',
     sound: 'chew',
-    quote: 'STEAMING MOMOS! Fiery garlic dip balanced with maximum comfort. Brain static neutralized! 🥟🔥'
+    quote: 'STEAMING MOMOS! Fiery garlic dip balanced with maximum comfort. Brain static neutralized!'
   },
   boba: {
-    icon: '🧋',
+    icon: '',
     sound: 'drop',
-    quote: 'SLURP! Brown sugar boba absorbed. Emotional battery officially recharged! 🧋✨'
+    quote: 'SLURP! Brown sugar boba absorbed. Emotional battery officially recharged!'
   },
   paratha: {
-    icon: '🥞',
+    icon: '',
     sound: 'chew',
-    quote: 'GOLDEN PARATHA & DAHI! The purest cosmic definition of sukoon. Zero worries remain! 🥞❤️'
+    quote: 'GOLDEN PARATHA & DAHI! The purest cosmic definition of sukoon. Zero worries remain!'
   }
 };
 
@@ -811,7 +812,6 @@ class JellyPet {
 
     haptics.victory();
     this.blushLevel = 1.0;
-    showToast(`🍽️ Fed Bobo: ${snack.icon}`);
 
     this.points.forEach((p) => {
       p.targetRadius = this.radius + 22;
@@ -829,7 +829,7 @@ class JellyPet {
 
     const emojiIndicator = document.getElementById('currentTreatEmoji');
     if (emojiIndicator) {
-      emojiIndicator.textContent = snack.icon;
+      emojiIndicator.textContent = '';
     }
   }
 
@@ -841,18 +841,18 @@ class JellyPet {
 
     if (this.isPurring) {
       btn.classList.add('active');
-      label.textContent = 'Purring...';
-      icon.textContent = '💖';
+      label.textContent = 'Purring';
+      setIcon(icon, 'heart');
       sounds.startPurr();
       haptics.purrTick();
       this.purrInterval = setInterval(() => {
         haptics.purrTick();
       }, 350);
-      showToast('🐱 Purr Therapy active: hold phone against palm');
+      showToast('Purr Therapy active: hold phone against palm');
     } else {
       btn.classList.remove('active');
-      label.textContent = 'Purr Engine';
-      icon.textContent = '🐱';
+      label.textContent = 'Purr';
+      setIcon(icon, 'paw');
       sounds.stopPurr();
       clearInterval(this.purrInterval);
     }
@@ -984,7 +984,7 @@ class JellyPet {
 }
 
 const PET_QUOTES = [
-  'You are not behind. You are loading. ✨',
+  'You are not behind. You are loading.',
   'I have reviewed the evidence: you deserve a snack right now.',
   'Tiny progress still changes the coordinates.',
   'Your brain is loud, not always correct. ₍^.ˬ.^₎',
@@ -1068,7 +1068,7 @@ function initShredder() {
       if (shredding) return;
       const text = input ? input.value.trim() : '';
       if (!text) {
-        showToast('✍️ Type something first to feed the shredder!');
+        showToast('Type something first to feed the shredder!');
         if (input) input.focus();
         haptics.tap();
         return;
@@ -1126,14 +1126,14 @@ function initShredder() {
       const text = document.getElementById('verdictContent').textContent;
       const rx = document.getElementById('verdictRx').textContent;
       const shareData = {
-        title: 'Vibe Alchemist Verdict ✨',
-        text: `⚡ ${title}\n"${text}"\n\n💊 Mandatory Prescription: ${rx}`
+        title: 'Vibe Alchemist Verdict',
+        text: `${title}\n"${text}"\n\nMandatory Prescription: ${rx}`
       };
 
       if (navigator.share) {
         navigator.share(shareData).catch(() => {});
       } else {
-        copyText(shareData.text).then((ok) => showToast(ok ? '📋 Verdict copied to clipboard!' : '⚠️ Copy not available here'));
+        copyText(shareData.text).then((ok) => showToast(ok ? 'Verdict copied to clipboard!' : 'Copy not available here'));
       }
       haptics.tap();
     });
@@ -1144,57 +1144,57 @@ function initShredder() {
 const WEIRD_FORTUNES = [
   {
     category: 'rain',
-    badge: '🌧️ SUKOON MEMO',
+    badge: 'SUKOON MEMO',
     text: 'Some thoughts are weather — real for a moment, never permanent.'
   },
   {
     category: 'rain',
-    badge: '🌧️ WINDOW PROPHECY',
+    badge: 'WINDOW PROPHECY',
     text: "The ghost at the window isn't haunting you. It just likes the rain too."
   },
   {
     category: 'rain',
-    badge: '🌧️ GENTLE TRUTH',
+    badge: 'GENTLE TRUTH',
     text: 'Sukoon can be small: a rainy window, warm food, and nowhere else to be.'
   },
   {
     category: 'royal',
-    badge: '👑 ROYAL EDICT',
+    badge: 'ROYAL EDICT',
     text: 'Curiosity looks good on you. Follow one strange little question tonight.'
   },
   {
     category: 'royal',
-    badge: '👑 ROYAL EDICT',
+    badge: 'ROYAL EDICT',
     text: "Tonight's prophecy: extra cheese, one good laugh, and absolutely no waiting."
   },
   {
     category: 'royal',
-    badge: '👑 ROYAL TRUTH',
+    badge: 'ROYAL TRUTH',
     text: 'You have the rare ability to make a complicated day feel survivable.'
   },
   {
     category: 'royal',
-    badge: '👑 ROYAL TRUTH',
+    badge: 'ROYAL TRUTH',
     text: 'You carry the exact amount of chaos needed to stop the room becoming boring.'
   },
   {
     category: 'bakery',
-    badge: '🥐 BAKERY WISDOM',
+    badge: 'BAKERY WISDOM',
     text: 'Your next good idea is currently disguised as a tiny, slightly inconvenient first step.'
   },
   {
     category: 'bakery',
-    badge: '🥐 BAKERY WISDOM',
+    badge: 'BAKERY WISDOM',
     text: 'Someone would trust you with the emergency snack backpack. That is true leadership.'
   },
   {
     category: 'bakery',
-    badge: '🥐 BAKERY WISDOM',
+    badge: 'BAKERY WISDOM',
     text: 'A future version of you is deeply grateful that you kept going today.'
   },
   {
     category: 'bakery',
-    badge: '🥐 BAKERY WISDOM',
+    badge: 'BAKERY WISDOM',
     text: 'You are not behind. You are loading. Protect the softness.'
   }
 ];
@@ -1210,6 +1210,8 @@ function initOracle() {
   let activeCat = 'all';
 
   function drawFortune() {
+    const cap = document.getElementById('orbCaption');
+    if (cap) cap.hidden = true;
     let pool = WEIRD_FORTUNES;
     if (activeCat !== 'all') {
       pool = WEIRD_FORTUNES.filter((f) => f.category === activeCat);
@@ -1222,7 +1224,7 @@ function initOracle() {
 
     if (badge && text) {
       badge.textContent = f.badge;
-      text.textContent = `"${f.text}"`;
+      text.textContent = `“${f.text}”`;
     }
 
     sounds.playChime();
@@ -1261,13 +1263,12 @@ function initOracle() {
         `Attention ${name}: your emotional battery is now being recharged with pure sukoon.`
       ];
       const q = pickFresh(customQuotes, 'custom');
-      document.getElementById('fortuneCategory').textContent = `✨ MEMO FOR ${name.toUpperCase()}`;
-      document.getElementById('fortuneText').textContent = `"${q}"`;
+      document.getElementById('fortuneCategory').textContent = `MEMO FOR ${name.toUpperCase()}`;
+      document.getElementById('fortuneText').textContent = `“${q}”`;
 
       sounds.playChime();
       haptics.victory();
       triggerConfettiBurst();
-      showToast(`🔮 Spell cast for ${name}!`);
     });
   }
 
@@ -1276,14 +1277,14 @@ function initOracle() {
       const text = document.getElementById('fortuneText').textContent;
       const badge = document.getElementById('fortuneCategory').textContent;
       const shareData = {
-        title: 'Oracle Prophecy ✨',
+        title: 'Oracle Prophecy',
         text: `${badge}\n${text}\n\n— via Vibe Alchemist`
       };
 
       if (navigator.share) {
         navigator.share(shareData).catch(() => {});
       } else {
-        copyText(shareData.text).then((ok) => showToast(ok ? '💌 Oracle truth copied!' : '⚠️ Copy not available here'));
+        copyText(shareData.text).then((ok) => showToast(ok ? 'Oracle truth copied!' : 'Copy not available here'));
       }
       haptics.tap();
     });
@@ -1301,12 +1302,13 @@ function initValidationCourt() {
   ];
 
   const headings = [
-    'CASE 404: YOU WERE 1000% IN THE RIGHT',
-    'CASE CLOSED: HEROIC RESTRAINT NOTED',
-    'UNANIMOUS: IMMEDIATE SNACKS OWED',
-    'SUPREME RULING: CASE DISMISSED'
+    'Case 404: you were 1000% in the right',
+    'Case closed: heroic restraint noted',
+    'Unanimous: immediate snacks owed',
+    'Supreme ruling: case dismissed'
   ];
 
+  lastPick.ruling = 0; // the ruling shown on load counts as already seen
   if (buzzer) {
     buzzer.addEventListener('click', () => {
       sounds.playBuzzer();
@@ -1317,7 +1319,7 @@ function initValidationCourt() {
       const text = document.getElementById('rulingText');
       const heading = document.getElementById('rulingHeading');
       const card = document.getElementById('rulingCard');
-      if (text) text.textContent = rulings[idx];
+      if (text) text.textContent = rulings[idx].replace(/^[A-Za-z0-9 ]{3,24}:\s*/, '');
       if (heading) heading.textContent = headings[idx];
       if (card) {
         card.classList.remove('flash');
@@ -1325,7 +1327,6 @@ function initValidationCourt() {
         card.classList.add('flash');
       }
 
-      showToast('⚖️ Total vindication granted!');
     });
   }
 }
@@ -1342,14 +1343,13 @@ function initSensorySwitchboard() {
   function updatePearlCount() {
     const unpopped = grid.querySelectorAll('.bubble-wrap-item:not(.popped)').length;
     if (counter) {
-      counter.textContent = unpopped > 0 ? `${unpopped} left` : 'Clean sweep!';
+      counter.textContent = unpopped > 0 ? `${unpopped} left` : 'All cleared';
     }
     if (unpopped === 0) {
       if (sweepBanner) sweepBanner.style.display = 'block';
       sounds.playFanfare();
       haptics.victory();
       triggerConfettiBurst(true);
-      showToast('🎉 Clean sweep! Pristine sukoon achieved.');
     } else {
       if (sweepBanner) sweepBanner.style.display = 'none';
     }
@@ -1389,7 +1389,6 @@ function initSensorySwitchboard() {
       renderBubbles();
       sounds.playPop(520);
       haptics.tap();
-      showToast('🫧 Fresh rain pearls ready!');
     });
   }
   renderBubbles();
@@ -1403,9 +1402,9 @@ function initSensorySwitchboard() {
   const timer = document.getElementById('breathTimer');
   const BREATH_TOTAL = 60;
   const PHASES = [
-    { cls: 'inhale', until: 4, label: 'Breathe In...', sub: 'Inhale warm cinnamon air 🥐' },
-    { cls: 'hold', until: 6, label: 'Hold Gently...', sub: 'Absorb the calm & sweetness ✨' },
-    { cls: 'exhale', until: 12, label: 'Breathe Out...', sub: 'Exhale the noisy static 💨' }
+    { cls: 'inhale', until: 4, label: 'Inhale', sub: '' },
+    { cls: 'hold', until: 6, label: 'Hold', sub: '' },
+    { cls: 'exhale', until: 12, label: 'Exhale', sub: '' }
   ];
   let breathTimer = null;
   let breathStart = 0;
@@ -1416,10 +1415,10 @@ function initSensorySwitchboard() {
     breathTimer = null;
     lastPhase = null;
     if (breathCircle) breathCircle.classList.remove('inhale', 'hold', 'exhale');
-    if (toggleBreathBtn) toggleBreathBtn.textContent = '▶ Start 60s';
-    if (label) label.textContent = completed ? 'Complete ✨' : 'Paused';
+    if (toggleBreathBtn) toggleBreathBtn.textContent = 'Start';
+    if (label) label.textContent = completed ? 'Done' : 'Paused';
     if (sub) sub.textContent = completed ? 'Mindful sukoon achieved' : 'Tap start whenever you are ready';
-    if (timer) timer.textContent = completed ? 'Nice work' : `${BREATH_TOTAL}s`;
+    if (timer) timer.textContent = completed ? '0:00' : '1:00';
   }
 
   function breathTick() {
@@ -1428,10 +1427,9 @@ function initSensorySwitchboard() {
       stopBreathing(true);
       sounds.playFanfare();
       triggerConfettiBurst();
-      showToast('🎉 Breath ritual complete!');
       return;
     }
-    if (timer) timer.textContent = `${Math.ceil(BREATH_TOTAL - elapsed)}s`;
+    if (timer) { const rem = Math.ceil(BREATH_TOTAL - elapsed); timer.textContent = `${Math.floor(rem / 60)}:${String(rem % 60).padStart(2, '0')}`; }
     const t = elapsed % 12;
     const phase = PHASES.find((p) => t < p.until);
     if (phase.cls !== lastPhase) {
@@ -1449,8 +1447,7 @@ function initSensorySwitchboard() {
   function startBreathing() {
     if (breathTimer) return;
     breathStart = Date.now();
-    if (toggleBreathBtn) toggleBreathBtn.textContent = '⏹ Stop';
-    showToast('🌬️ 60-second breathing started');
+    if (toggleBreathBtn) toggleBreathBtn.textContent = 'Stop';
     sounds.playChime();
     breathTick();
     breathTimer = setInterval(breathTick, 250);
@@ -1466,7 +1463,6 @@ function initSensorySwitchboard() {
       if (breathTimer) {
         stopBreathing(false);
         sounds.playPop(420);
-        showToast('Breathing paused');
       } else {
         startBreathing();
       }
@@ -1491,7 +1487,6 @@ function initSensorySwitchboard() {
       if (sipBadge) sipBadge.textContent = `${sips} sips today`;
       sounds.playDrop();
       haptics.tap();
-      showToast(`💧 Sip recorded! (${sips} today) · Pure sukoon`);
     });
   }
 
@@ -1499,7 +1494,7 @@ function initSensorySwitchboard() {
     unclenchBtn.addEventListener('click', () => {
       sounds.playChime();
       haptics.gentle();
-      showToast('🧘 Jaw unclenched, shoulders dropped. Doing great.');
+      showToast('Jaw unclenched. Shoulders down.');
     });
   }
 
@@ -1516,7 +1511,6 @@ function initSensorySwitchboard() {
       btn.setAttribute('aria-pressed', active ? 'true' : 'false');
       sounds.playPop(520);
       haptics.tap();
-      showToast(active ? '❤️ Saved to comfort favorites!' : '🤍 Removed from favorites');
     });
   });
 
@@ -1527,7 +1521,6 @@ function initSensorySwitchboard() {
       sounds.playFanfare();
       haptics.victory();
       triggerConfettiBurst(true);
-      showToast('🎆 UNAPOLOGETIC JOY DEPLOYED!');
     });
   }
 }
@@ -1757,7 +1750,6 @@ function initTheming() {
       safeStore.set('va-theme', themeVal);
       sounds.playChime();
       haptics.pop();
-      showToast(`🎨 Palette: ${opt.querySelector('span:last-child').textContent}`);
       setTimeout(() => closeThemeSheet(false), 200);
     });
   });
@@ -1779,15 +1771,13 @@ function initAudioControls() {
       sounds.enabled = !sounds.enabled;
       if (sounds.enabled) {
         audioBtn.classList.add('active');
-        if (audioIcon) audioIcon.textContent = '🔊';
+        if (audioIcon) setIcon(audioIcon, 'volume');
         sounds.playPop(600);
         if (window.VA.pet && window.VA.pet.isPurring) sounds.startPurr();
-        showToast('🔊 Sound Effects Enabled');
       } else {
         audioBtn.classList.remove('active');
-        if (audioIcon) audioIcon.textContent = '🔇';
+        if (audioIcon) setIcon(audioIcon, 'volume-off');
         sounds.stopPurr();
-        showToast('🔇 Sound Effects Muted');
       }
       haptics.tap();
     });
@@ -1802,7 +1792,7 @@ function initAudioControls() {
 
 // --- 15. PWA OFFLINE & INSTALLATION ---
 function initPWA() {
-  // Service workers need HTTPS or localhost; over plain http://LAN-IP the app still works, just not offline/installable.
+  // Service workers need HTTPS or localhost; elsewhere the app still runs, just not offline/installable.
   if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('./sw.js').catch((err) => {
       console.info('Service worker not registered (needs HTTPS or localhost):', err && err.message);
@@ -1810,30 +1800,35 @@ function initPWA() {
   }
 
   let deferredPrompt = null;
+  const banner = document.getElementById('installBanner');
   const installBtn = document.getElementById('installBtn');
+  const dismissBtn = document.getElementById('installDismissBtn');
   const standalone = window.matchMedia('(display-mode: standalone)').matches;
+  const DISMISS_MS = 30 * 24 * 3600 * 1000;
+  const hide = () => { if (banner) banner.hidden = true; };
 
   if (installBtn) {
     installBtn.addEventListener('click', async () => {
       if (!deferredPrompt) return;
-      installBtn.style.display = 'none';
+      hide();
       deferredPrompt.prompt();
       try { await deferredPrompt.userChoice; } catch (e) {}
       deferredPrompt = null;
     });
   }
+  if (dismissBtn) {
+    dismissBtn.addEventListener('click', () => { safeStore.set('va-install-dismissed', String(Date.now())); hide(); });
+  }
 
   window.addEventListener('beforeinstallprompt', (e) => {
     e.preventDefault();
-    if (standalone) return;
+    const dismissed = parseInt(safeStore.get('va-install-dismissed') || '0', 10);
+    if (standalone || (dismissed && Date.now() - dismissed < DISMISS_MS)) return;
     deferredPrompt = e;
-    if (installBtn) installBtn.style.display = 'inline-flex';
+    if (banner) banner.hidden = false;
   });
 
-  window.addEventListener('appinstalled', () => {
-    deferredPrompt = null;
-    if (installBtn) installBtn.style.display = 'none';
-  });
+  window.addEventListener('appinstalled', () => { deferredPrompt = null; hide(); });
 }
 
 // --- 16. BOOTSTRAP APP ON LOAD ---
@@ -1915,6 +1910,12 @@ document.addEventListener('DOMContentLoaded', () => {
     document.addEventListener('visibilitychange', () => {
       if (document.hidden) pet.stopPurr();
     });
+  }
+
+  const hint = document.getElementById('petHint');
+  if (hint) {
+    if (safeStore.get('va-hint-seen')) hint.hidden = true;
+    else if (petCanvas) petCanvas.addEventListener('pointerdown', () => { hint.hidden = true; safeStore.set('va-hint-seen', '1'); }, { once: true });
   }
 
   initMoodBarometer();

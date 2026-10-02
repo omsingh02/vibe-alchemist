@@ -1,4 +1,4 @@
-const CACHE_NAME = 'vibe-alchemist-v2';
+const CACHE_NAME = 'vibe-alchemist-v3';
 const CORE = [
   './',
   './index.html',

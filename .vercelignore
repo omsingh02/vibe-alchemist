@@ -1,3 +1,4 @@
-deploy.sh
-.gitignore
-LICENSE
+serve.py
+generate_icons.py
+README.md
+tests/
